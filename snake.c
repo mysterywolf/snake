@@ -30,16 +30,10 @@
 
 #include <rtthread.h> /* for rt_thread_delay */
 
-#if !defined(bool)
-#	define true 1
-#	define false 0
-#	define bool int
-#endif
-
 /* OPTIONS (CHANGE THIS BIT) */
 
-#define SNAKE_WRAP		true	/* screen wrapping */
-#define SPEED			100	/* refresh rate (in seconds) */
+#define SNAKE_WRAP		RT_FALSE	/* screen wrapping */
+#define SPEED			100	/* refresh rate (in os Hz) */
 #define BONUS_CHANCE	400	/* chance of 1/CHANCE for bonus to appear */
 
 #define BONUS_MIN_TIME	30	/* lower range of lifespan of bonus */
@@ -154,7 +148,7 @@ static void snake_init(void) {
 
 	/* set defaults */
 	score = 0;
-    quit = false;
+    quit = RT_FALSE;
     game_state = NULL;
     border = NULL;
     snake_body = NULL;
@@ -210,11 +204,11 @@ static void snake_input(void) {
 	fcntl(0, F_SETFL, old);
 
 	/* 'normal' input switch */
-	int weird = false;
+	int weird = RT_FALSE;
 	switch(ch) {
 		case 'q':
 		case 'Q':
-			quit = true;
+			quit = RT_TRUE;
 			break;
 		case 'w':
 		case 'W':
@@ -237,7 +231,7 @@ static void snake_input(void) {
 				snake_direction = left;
 			break;
 		case 27:
-			weird = true;
+			weird = RT_TRUE;
 			break;
 	}
 
@@ -298,15 +292,15 @@ static void shift_snake(void) {
 
 static int in_snake(int x, int y) {
 	if(snake_head[X] == x && snake_head[Y] == y)
-		return true;
+		return RT_TRUE;
 
 	int i;
 	for(i = 0; i < snake_len; i++) {
 		if(snake_body[i][X] == x && snake_body[i][Y] == y)
-			return true;
+			return RT_TRUE;
 	}
 
-	return false;
+	return RT_FALSE;
 } /* in_snake() */
 
 static void snake_update(void) {
@@ -330,7 +324,7 @@ static void snake_update(void) {
 	int i;
 	for(i = 1; i < snake_len; i++) {
 		if(snake_head[X] == snake_body[i][X] && snake_head[Y] == snake_body[i][Y]) {
-			quit = true;
+			quit = RT_TRUE;
 			return;
 		}
 	}
@@ -348,7 +342,7 @@ static void snake_update(void) {
 			snake_head[Y] %= SCREEN_HEIGHT;
 		} else {
 			/* otherwise, game over */
-			quit = true;
+			quit = RT_TRUE;
 			return;
 		}
 
@@ -480,7 +474,7 @@ static void clr_line(void) {
 	fflush(stdout);
 } /* clr_line() */
 
-void snake_redraw(void) {
+static void snake_redraw(void) {
 	/* move virtual cursor to top left */
 	printf("\x1b[H");
 	fflush(stdout);
