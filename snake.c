@@ -573,4 +573,4 @@ static int snake_main(int argc, char *argv[]) {
     
 	return 0;
 }
-MSH_CMD_EXPORT_ALIAS(snake_main, snake, a remake of the old nokia game);
+MSH_CMD_EXPORT_ALIAS(snake_main, snake, a remake of the old Nokia game);

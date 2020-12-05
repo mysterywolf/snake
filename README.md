@@ -6,7 +6,7 @@
  RT-Thread online packages  --->
     miscellaneous packages  --->
         games: games run on RT-Thread console  --->
-            [*] snake: a remake of the old nokia game
+            [*] snake: a remake of the old Nokia game
 ```
 
 在终端下键入：
@@ -25,7 +25,8 @@ msh> snake
 
 ## 维护&联系
 
-原作者：https://github.com/cyphar/ascii-snake
+> 原作者：https://github.com/cyphar/ascii-snake
+>
 
 Meco Man
 
