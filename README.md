@@ -25,6 +25,8 @@ msh> snake
 
 ## 维护&联系
 
+原作者：https://github.com/cyphar/ascii-snake
+
 Meco Man
 
 jiantingman@foxmail.com
