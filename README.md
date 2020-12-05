@@ -1,5 +1,7 @@
 # Snake | 贪吃蛇 #
 
+> 原作者：https://github.com/cyphar/ascii-snake
+
 在ENV工具的配置方法：
 
 ```
@@ -17,16 +19,13 @@ msh> snake
 
 即可运行。
 
-
+![snake](snake.png)
 
 使用WASD或方向键控制，按Q退出。
 
 
 
 ## 维护&联系
-
-> 原作者：https://github.com/cyphar/ascii-snake
->
 
 Meco Man
 
