@@ -1,13 +1,11 @@
 # Snake | 贪吃蛇 #
 
-> 原作者：https://github.com/cyphar/ascii-snake
-
-在ENV工具的配置方法：
+## 如何获取软件包
 
 ```
  RT-Thread online packages  --->
     miscellaneous packages  --->
-        games: games run on RT-Thread console  --->
+        entertainment: terminal games and other interesting software packages  --->
             [*] snake: a remake of the old Nokia game
 ```
 
@@ -32,3 +30,5 @@ Meco Man
 jiantingman@foxmail.com
 
 https://github.com/mysterywolf/2048
+
+> 原作者：https://github.com/cyphar/ascii-snake
