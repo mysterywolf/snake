@@ -1,4 +1,4 @@
-# Snake | 贪吃蛇 #
+# Snake | 贪吃蛇 for RT-Thread
 
 ## 如何获取软件包
 
