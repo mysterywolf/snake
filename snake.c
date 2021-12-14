@@ -1,6 +1,14 @@
+/*
+ * Copyright (c) 2021, Meco Jianting Man <jiantingman@foxmail.com>
+ *
+ * SPDX-License-Identifier: GPL
+ *
+ * Change Logs:
+ * Date           Author       Notes
+ * 2020-12-05     Meco Man     port to RT-Thread
+ */
 /* snake: a remake of the old nokia game
  * Copyright (C) 2013 Aleksa Sarai
- * Copyright (C) 2020 Meco Man
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
