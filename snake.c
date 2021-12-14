@@ -15,19 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-/* for seeding randomness */
-#include <unistd.h>
-#include <time.h>
-
-/* for unbuffered input */
-#include <termios.h>
+#include <unistd.h> /* for seeding randomness */
+#include <sys/time.h>
+#include <termios.h> /* for unbuffered input */
 #include <fcntl.h>
-
 #include <rtthread.h> /* for rt_thread_delay */
 
 /* OPTIONS (CHANGE THIS BIT) */
@@ -144,14 +136,14 @@ static int snake_rand(int min, int max) {
 
 static void snake_init(void) {
     /* seed randomness */
-    srand(time(NULL));
+    srand(time(RT_NULL));
 
     /* set defaults */
     score = 0;
     quit = RT_FALSE;
-    game_state = NULL;
-    border = NULL;
-    snake_body = NULL;
+    game_state = RT_NULL;
+    border = RT_NULL;
+    snake_body = RT_NULL;
     snake_direction = right;
 
     /* snake */
@@ -159,11 +151,11 @@ static void snake_init(void) {
     snake_head[X] = SCREEN_WIDTH / 2;
     snake_head[Y] = SCREEN_HEIGHT / 2;
 
-    snake_body = malloc(snake_len * sizeof(int *));
+    snake_body = rt_malloc(snake_len * sizeof(int *));
 
     int i;
     for(i = 0; i < snake_len; i++) {
-        snake_body[i] = malloc(2 * sizeof(int));
+        snake_body[i] = rt_malloc(2 * sizeof(int));
 
         /* set default position */
         snake_body[i][X] = snake_head[X] - i;
@@ -179,14 +171,14 @@ static void snake_init(void) {
     timer = -1;
 
     /* game state */
-    game_state = calloc(SCREEN_HEIGHT * SCREEN_WIDTH, sizeof(char *));
+    game_state = rt_calloc(SCREEN_HEIGHT * SCREEN_WIDTH, sizeof(char *));
     for(i = 0; i < SCREEN_WIDTH; i++) {
-        game_state[i] = calloc(SCREEN_WIDTH + 1, 1);
+        game_state[i] = rt_calloc(SCREEN_WIDTH + 1, 1);
         game_state[i][SCREEN_WIDTH] = '\0';
     }
 
     /* border */
-    border = calloc(SCREEN_WIDTH + 3, 1);
+    border = rt_calloc(SCREEN_WIDTH + 3, 1);
 
     for(i = 0; i < SCREEN_WIDTH; i++)
         border[i + 1] = BORDER_HORI;
@@ -354,8 +346,8 @@ static void snake_update(void) {
         score += FOOD_SCORE;
 
         /* reallocate body */
-        snake_body = realloc(snake_body, (snake_len + 1) * sizeof(int *));
-        snake_body[snake_len] = malloc(2 * sizeof(int));
+        snake_body = rt_realloc(snake_body, (snake_len + 1) * sizeof(int *));
+        snake_body[snake_len] = rt_malloc(2 * sizeof(int));
 
         /* set body to defaults */
         snake_body[snake_len][X] = -1;
@@ -467,37 +459,34 @@ static void snake_update(void) {
 } /* snake_update() */
 
 static void clr_line(void) {
-    printf("\x1b[s"); /* save current cursor position */
-    printf("%*s", SCREEN_WIDTH, ""); /* blank out virual screen */
-    printf("\x1b[u"); /* move cursor back to saved position */
-
-    fflush(stdout);
+    rt_kprintf("\x1b[s"); /* save current cursor position */
+    rt_kprintf("%*s", SCREEN_WIDTH, ""); /* blank out virual screen */
+    rt_kprintf("\x1b[u"); /* move cursor back to saved position */
 } /* clr_line() */
 
 static void snake_redraw(void) {
     /* move virtual cursor to top left */
-    printf("\x1b[H");
-    fflush(stdout);
+    rt_kprintf("\x1b[H");
 
     /* top border */
-    printf("%s\n", border);
+    rt_kprintf("%s\n", border);
 
     /* print game state */
     int i;
     for(i = 0; i < SCREEN_HEIGHT; i++)
-        printf("%c%s%c\n", BORDER_VERT, game_state[i], BORDER_VERT);
+        rt_kprintf("%c%s%c\n", BORDER_VERT, game_state[i], BORDER_VERT);
 
     /* bottom border */
-    printf("%s\n", border);
+    rt_kprintf("%s\n", border);
 
     /* print score */
     clr_line();
-    printf("\n" SCORE_FORMAT "\n", score);
+    rt_kprintf("\n" SCORE_FORMAT "\n", score);
 
     /* if a timer exists, print it */
     if(timer >= 0) {
         clr_line();
-        printf(TIMER_FORMAT "\n", timer);
+        rt_kprintf(TIMER_FORMAT "\n", timer);
     }
 
     clr_line();
@@ -515,15 +504,13 @@ static int snake_end_state(void) {
 } /* snake_end_state() */
 
 static void move_cursor(int row, int column) {
-    printf("\x1b[%d;%df", row, column);
-    fflush(stdout);
+    rt_kprintf("\x1b[%d;%df", row, column);
 } /* snake_redraw() */
 
 static int snake_main(int argc, char *argv[]) {
     /* clear screen */
-    printf("\x1b[H\x1b[2J");
-    printf(ANSI_HIDE_CUR);
-    fflush(stdout);
+    rt_kprintf("\x1b[H\x1b[2J");
+    rt_kprintf(ANSI_HIDE_CUR);
 
     /* intialise snake */
     snake_init();
@@ -540,7 +527,7 @@ static int snake_main(int argc, char *argv[]) {
     }
 
     /* end game */
-    char *msg = NULL;
+    char *msg = RT_NULL;
     int end_state = snake_end_state();
 
     switch(end_state) {
@@ -554,22 +541,21 @@ static int snake_main(int argc, char *argv[]) {
     }
 
     move_cursor((SCREEN_HEIGHT / 2) + 2, (SCREEN_WIDTH / 2) - (strlen(msg) / 2) + 2);
-    printf("%s%s%s", ANSI_RED, msg, ANSI_CLEAR);
-    fflush(stdout);
+    rt_kprintf("%s%s%s", ANSI_RED, msg, ANSI_CLEAR);
 
-    /* free memory */
+    /* rt_free memory */
     int i;
     for(i = 0; i < SCREEN_HEIGHT * SCREEN_WIDTH; i++)
-        free(game_state[i]);
-    free(game_state);
+        rt_free(game_state[i]);
+    rt_free(game_state);
 
     for(i = 0; i < snake_len; i++)
-        free(snake_body[i]);
-    free(snake_body);
-    free(border);
+        rt_free(snake_body[i]);
+    rt_free(snake_body);
+    rt_free(border);
 
     move_cursor(SCREEN_HEIGHT + 5 + (timer >= 0), 0); /* move to default, screen_height + borders + spaces for score, etc. */
-    printf(ANSI_SHOW_CUR);
+    rt_kprintf(ANSI_SHOW_CUR);
 
     return 0;
 }
