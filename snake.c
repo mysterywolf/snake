@@ -21,6 +21,7 @@
 #include <termios.h> /* for unbuffered input */
 #include <fcntl.h>
 #include <rtthread.h> /* for rt_thread_delay */
+#include <shell.h> /* for finsh_getchar */
 
 /* OPTIONS (CHANGE THIS BIT) */
 
@@ -119,12 +120,12 @@ static char getch(void) {
     tcsetattr(0, TCSANOW, &new);
 
     /* get char and reset terminal settings */
-    char ch = getchar();
+    char ch = finsh_getchar();
     tcsetattr(0, TCSANOW, &old);
 
-    /* if ctrl-c was pressed, exit */
-    if(ch == 3)
-        exit(2);
+//    /* if ctrl-c was pressed, exit */
+//    if(ch == 3)
+//        exit(2);
 
     return ch;
 } /* getch_() */
